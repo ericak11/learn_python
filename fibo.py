@@ -204,3 +204,148 @@ filter(lambda x: x > 5, [3, 4, 5, 6, 7])   # => [6, 7]
 # We can use list comprehensions for nice maps and filters
 [add_10(i) for i in [1, 2, 3]]  # => [11, 12, 13]
 [x for x in [3, 4, 5, 6, 7] if x > 5]   # => [6, 7]
+
+####################################################
+## 5. Classes
+####################################################
+
+# We subclass from object to get a class.
+class Human(object):
+
+    # A class attribute. It is shared by all instances of this class
+    species = "H. sapiens"
+
+    # Basic initializer, this is called when this class is instantiated.
+    # Note that the double leading and trailing underscores denote objects
+    # or attributes that are used by python but that live in user-controlled
+    # namespaces. You should not invent such names on your own.
+    def __init__(self, name):
+        # Assign the argument to the instance's name attribute
+        self.name = name
+
+    # An instance method. All methods take "self" as the first argument
+    def say(self, msg):
+        return "%s: %s" % (self.name, msg)
+
+    # A class method is shared among all instances
+    # They are called with the calling class as the first argument
+    @classmethod
+    def get_species(cls):
+        return cls.species
+
+    # A static method is called without a class or instance reference
+    @staticmethod
+    def grunt():
+        return "*grunt*"
+
+
+# Instantiate a class
+i = Human(name="Ian")
+print(i.say("hi"))     # prints out "Ian: hi"
+
+j = Human("Joel")
+print(j.say("hello"))  # prints out "Joel: hello"
+
+# Call our class method
+i.get_species()   # => "H. sapiens"
+
+# Change the shared attribute
+Human.species = "H. neanderthalensis"
+i.get_species()   # => "H. neanderthalensis"
+j.get_species()   # => "H. neanderthalensis"
+
+# Call the static method
+Human.grunt()   # => "*grunt*"
+
+
+####################################################
+## 6. Modules
+####################################################
+
+# You can import modules
+import math
+print(math.sqrt(16))  # => 4
+
+# You can get specific functions from a module
+from math import ceil, floor
+print(ceil(3.7))  # => 4.0
+print(floor(3.7))   # => 3.0
+
+# You can import all functions from a module.
+# Warning: this is not recommended
+from math import *
+
+# You can shorten module names
+import math as m
+math.sqrt(16) == m.sqrt(16)   # => True
+# you can also test that the functions are equivalent
+from math import sqrt
+math.sqrt == m.sqrt == sqrt  # => True
+
+# Python modules are just ordinary python files. You
+# can write your own, and import them. The name of the
+# module is the same as the name of the file.
+
+# You can find out which functions and attributes
+# defines a module.
+import math
+dir(math)
+
+
+####################################################
+## 7. Advanced
+####################################################
+
+# Generators help you make lazy code
+def double_numbers(iterable):
+    for i in iterable:
+        yield i + i
+
+# A generator creates values on the fly.
+# Instead of generating and returning all values at once it creates one in each
+# iteration.  This means values bigger than 15 wont be processed in
+# double_numbers.
+# Note xrange is a generator that does the same thing range does.
+# Creating a list 1-900000000 would take lot of time and space to be made.
+# xrange creates an xrange generator object instead of creating the entire list
+# like range does.
+# We use a trailing underscore in variable names when we want to use a name that
+# would normally collide with a python keyword
+xrange_ = xrange(1, 900000000)
+
+# will double all numbers until a result >=30 found
+for i in double_numbers(xrange_):
+    print(i)
+    if i >= 30:
+        break
+
+
+# Decorators
+# in this example beg wraps say
+# Beg will call say. If say_please is True then it will change the returned
+# message
+from functools import wraps
+
+
+def beg(target_function):
+    @wraps(target_function)
+    def wrapper(*args, **kwargs):
+        msg, say_please = target_function(*args, **kwargs)
+        if say_please:
+            return "{} {}".format(msg, "Please! I am poor :(")
+        return msg
+
+    return wrapper
+
+
+@beg
+def say(say_please=False):
+    msg = "Can you buy me a beer?"
+    return msg, say_please
+
+
+print(say())  # Can you buy me a beer?
+print(say(say_please=True))  # Can you buy me a beer? Please! I am poor :(
+
+
+###
