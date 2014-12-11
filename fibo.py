@@ -27,6 +27,33 @@ def fib2(n): # return Fibonacci series up to n
 # You can use keywords if you don't want to count.
 "{name} wants to eat {food}".format(name="Bob", food="lasagna")
 
+# Lists store sequences
+li = []
+# You can start with a prefilled list
+other_li = [4, 5, 6]
+
+# Add stuff to the end of a list with append
+li.append(1)    # li is now [1]
+li.append(2)    # li is now [1, 2]
+li.append(4)    # li is now [1, 2, 4]
+li.append(3)    # li is now [1, 2, 4, 3]
+# Remove from the end with pop
+li.pop()        # => 3 and li is now [1, 2, 4]
+# Let's put it back
+li.append(3)    # li is now [1, 2, 4, 3] again.
+
+# Access a list like you would any array
+li[0]  # => 1
+# Assign new values to indexes that have already been initialized with =
+li[0] = 42
+li[0]  # => 42
+li[0] = 1  # Note: setting it back to the original value
+# Look at the last element
+li[-1]  # => 3
+
+# Looking out of bounds is an IndexError
+li[4]  # Raises an IndexError
+
 # You can look at ranges with slice syntax.
 # (It's a closed/open range for you mathy types.)
 li[1:3]  # => [2, 4]
